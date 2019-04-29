@@ -36,15 +36,73 @@ const writeCounter = (count, callback) => {
   });
 };
 
+
+// it('should use error first callback pattern', (done) => {
+//   counter.getNextUniqueId((err, id) => {
+//     expect(err).to.be.null;
+//     expect(id).to.exist;
+//     done();
+//   });
+// });
+
 // Public API - Fix this function //////////////////////////////////////////////
 
-exports.getNextUniqueId = () => {
-  counter = counter + 1;
-  return zeroPaddedNumber(counter);
+exports.getNextUniqueId = (callback) => {
+  readCounter((err, counter) => {
+    if (err) {
+      // callback(err, undefined)
+      callback(err, counter)
+    }else {
+      writeCounter(counter+1, (err, counterString) => {
+        if (err){
+          throw err;
+        }else{
+          callback(null, counterString)
+        }x
+      });
+    }
+  })
 };
 
 
 
+
+
+//get counter from file
+//add to it
+//send it back
+
 // Configuration -- DO NOT MODIFY //////////////////////////////////////////////
 
 exports.counterFile = path.join(__dirname, 'counter.txt');
+
+
+
+
+// readCounter((err, counter) => {
+//   if(err) {
+//     // console.log('- - - - - - - - - - - - - - - - - - - - - - - - - - - - readCounter error: ', err);
+//     console.log(err)
+//     throw err;
+//   } else {
+//     counter = counter + 1;
+//     // console.log('- - - - - - - - - - - - - - - - - - - - - - - - - - - - counter is: ', counter)
+
+//     writeCounter(counter, (err, counter) => {
+//       if(err) {
+//         // console.log('- - - - - - - - - - - - - - - - - - - - - - - - - - - - writeCounter error: ', err)
+//         console.log(err);
+//         throw err;
+//       } else {
+//         // console.log("- - - - - - - - - - - - - - - - - - - - - - - - - - - - writeCounter is done")
+//        var id =  zeroPaddedNumber(counter);
+//        callback(error, id)
+//         // console.log('- - - - - - - - - - - - - - - - - - - - - - - - - - - - counter is: ', counter)
+//       }
+//     })
+//   }
+// })
+
+// //get counter from file
+// //add to it
+// //send it back
