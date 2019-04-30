@@ -16,12 +16,12 @@ exports.create = (text, callback) => {
       console.log('error getting ID:' + err);
       throw (err);
     } else {
-      items[id] = text;
+      // items[id] = text;
     
       var todoPath = path.join(exports.dataDir, `${id}.txt`);
       
       fs.writeFile(todoPath, text, (err) => {
-        if(err) {
+        if (err) {
           callback(err);
         } else {
           callback(null, {id: id, text: text});
@@ -38,25 +38,55 @@ exports.create = (text, callback) => {
 //   } else {
 //     return results
 //   }})
+
+// exports.readAll = (callback) => {
+
+//   var keys = Object.keys(items);
+//   console.log("- - - - - - -Keys: ", keys);
+//   var keysLength = keys.length;
+//   console.log("- - - - -__________ - -keysLen: ", keysLength);
+//   if (keysLength === 0) {
+//     callback(null, []);
+//   }
+//   var data = _.map(items, function(text, id) {
+//     return { id: id, text: id };
+//     // { '00001': { text: 'feed dog' }, '00002': {  text: 'buy food' }}
+
+//   });
+//   callback(null, data);
+// };
 const neverUsedTodoList = [{ id: '00001', text: '00001' }, { id: '00002', text: '00002' }];
 
+
 exports.readAll = (callback) => {
-  var keys = Object.keys(items);
-  var keysLength = keys.length;
-
-  if (keysLength === 0) {
-    return [];
-  }
-
-  var data = _.map(items, function(text, id) {
-    return { id: id, text: id };
-
-    // { '00001': { text: 'feed dog' }, '00002': {  text: 'buy food' }}
+  fs.readdir(exports.dataDir, (err, itemsArray)=>{
+    var data = [];
+    if (err) {
+      throw err;
+    } else {
+      itemsArray.forEach((fileName)=> {
+        data.push({id: fileName.slice(0, -4), text: fileName.slice(0, -4)});   
+      });
+      callback(null, data);
+    }
   });
-    
-  callback(null, data);
-  
 };
+
+
+// var keys = Object.keys(items);
+// console.log("- - - - - - -Keys: ", keys);
+// var keysLength = keys.length;
+// console.log("- - - - -__________ - -keysLen: ", keysLength);
+// if (keysLength === 0) {
+//   callback(null, []);
+// }
+// var data = _.map(items, function(text, id) {
+//   return { id: id, text: id };
+//   // { '00001': { text: 'feed dog' }, '00002': {  text: 'buy food' }}
+
+// });
+// callback(null, data);
+
 
 exports.readOne = (id, callback) => {
   var text = items[id];

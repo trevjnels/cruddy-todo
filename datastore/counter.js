@@ -51,13 +51,13 @@ exports.getNextUniqueId = (callback) => {
   readCounter((err, counter) => {
     if (err) {
       // callback(err, undefined)
-      callback(err, counter)
-    }else {
-      writeCounter(counter+1, (err, counterString) => {
-        if (err){
+      callback(err, counter);
+    } else {
+      writeCounter( counter + 1, (err, counterString) => {
+        if (err) {
           throw err;
-        }else{
-          callback(null, counterString)
+        } else {
+          callback(null, counterString);
         }
       });
     }
