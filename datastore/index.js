@@ -57,7 +57,6 @@ exports.create = (text, callback) => {
 // };
 const neverUsedTodoList = [{ id: '00001', text: '00001' }, { id: '00002', text: '00002' }];
 
-
 exports.readAll = (callback) => {
   fs.readdir(exports.dataDir, (err, itemsArray)=>{
     var data = [];
@@ -65,37 +64,28 @@ exports.readAll = (callback) => {
       throw err;
     } else {
       itemsArray.forEach((fileName)=> {
-        data.push({id: fileName.slice(0, -4), text: fileName.slice(0, -4)});   
+    
+        data.push({id: fileName.slice(0, -4), text: fileName.slice(0, -4)}); 
       });
+      console.log('*****DATA: ', data);
       callback(null, data);
     }
   });
 };
 
 
-// var keys = Object.keys(items);
-// console.log("- - - - - - -Keys: ", keys);
-// var keysLength = keys.length;
-// console.log("- - - - -__________ - -keysLen: ", keysLength);
-// if (keysLength === 0) {
-//   callback(null, []);
-// }
-// var data = _.map(items, function(text, id) {
-//   return { id: id, text: id };
-//   // { '00001': { text: 'feed dog' }, '00002': {  text: 'buy food' }}
-
-// });
-// callback(null, data);
-
-
 exports.readOne = (id, callback) => {
-  var text = items[id];
-  if (!text) {
-    callback(new Error(`No item with id: ${id}`));
-  } else {
-    callback(null, { id, text });
-  }
+  var filePath = path.join(exports.dataDir, `${id}.txt`);
+  fs.readFile(filePath, 'utf8', (err, file) => {
+
+    if (!file || err) {
+      callback(new Error(`No item with id: ${id}`));
+    } else {
+      callback(null, { id, text: file });
+    }
+  });
 };
+
 
 exports.update = (id, text, callback) => {
   var item = items[id];
