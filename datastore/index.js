@@ -67,7 +67,6 @@ exports.readAll = (callback) => {
       itemsArray.forEach((fileName)=> {
         data.push({id: fileName.slice(0, -4), text: fileName.slice(0, -4)}); 
       });
-      console.log('*****DATA: ', data);
       callback(null, data);
     }
   });
