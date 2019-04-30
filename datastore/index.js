@@ -8,30 +8,54 @@ var items = {};
 // Public API - Fix these CRUD functions ///////////////////////////////////////
 
 
+// fs.readdir(todos.dataDir,  )
 
 exports.create = (text, callback) => {
-    counter.getNextUniqueId((err, id) => {
-    if(err) {
+  counter.getNextUniqueId((err, id) => {
+    if (err) {
       console.log('error getting ID:' + err);
-      throw(err);
+      throw (err);
     } else {
-      // items[id] = text;
-      fs.writeFile(`./data/${id}.txt`, text, (err) => {
+      items[id] = text;
+    
+      var todoPath = path.join(exports.dataDir, `${id}.txt`);
+      
+      fs.writeFile(todoPath, text, (err) => {
         if(err) {
           callback(err);
-        }else{
-          callback(text, );
+        } else {
+          callback(null, {id: id, text: text});
         }
-      })
+      });
     }
   });
 };
 
+//items
+// const todoCount = fs.readdir(todos.dataDir, (err, results) => {
+//   if (err) {
+//     throw err;
+//   } else {
+//     return results
+//   }})
+const neverUsedTodoList = [{ id: '00001', text: '00001' }, { id: '00002', text: '00002' }];
+
 exports.readAll = (callback) => {
-  var data = _.map(items, (text, id) => {
-    return { id, text };
+  var keys = Object.keys(items);
+  var keysLength = keys.length;
+
+  if (keysLength === 0) {
+    return [];
+  }
+
+  var data = _.map(items, function(text, id) {
+    return { id: id, text: id };
+
+    // { '00001': { text: 'feed dog' }, '00002': {  text: 'buy food' }}
   });
+    
   callback(null, data);
+  
 };
 
 exports.readOne = (id, callback) => {
@@ -66,7 +90,8 @@ exports.delete = (id, callback) => {
 
 // Config+Initialization code -- DO NOT MODIFY /////////////////////////////////
 
-exports.dataDir = path.join(__dirname, 'data');
+exports.dataDir = path.join(__dirname, 'data'); // ${id}.text
+// cruddyApp/datastore/data
 
 exports.initialize = () => {
   if (!fs.existsSync(exports.dataDir)) {
