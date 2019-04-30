@@ -7,10 +7,24 @@ var items = {};
 
 // Public API - Fix these CRUD functions ///////////////////////////////////////
 
+
+
 exports.create = (text, callback) => {
-  var id = counter.getNextUniqueId();
-  items[id] = text;
-  callback(null, { id, text });
+    counter.getNextUniqueId((err, id) => {
+    if(err) {
+      console.log('error getting ID:' + err);
+      throw(err);
+    } else {
+      // items[id] = text;
+      fs.writeFile(`./data/${id}.txt`, text, (err) => {
+        if(err) {
+          callback(err);
+        }else{
+          callback(text, );
+        }
+      })
+    }
+  });
 };
 
 exports.readAll = (callback) => {

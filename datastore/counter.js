@@ -58,10 +58,10 @@ exports.getNextUniqueId = (callback) => {
           throw err;
         }else{
           callback(null, counterString)
-        }x
+        }
       });
     }
-  })
+  });
 };
 
 
