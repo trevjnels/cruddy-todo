@@ -11,25 +11,41 @@ var items = {};
 // fs.readdir(todos.dataDir,  )
 
 exports.create = (text, callback) => {
-  counter.getNextUniqueId((err, id) => {
+  counter.getNextUniqueId((err, counterString) => {
     if (err) {
-      console.log('error getting ID:' + err);
-      throw (err);
+      callback(err);
     } else {
-      // items[id] = text;
-    
-      var todoPath = path.join(exports.dataDir, `${id}.txt`);
-      
-      fs.writeFile(todoPath, text, (err) => {
+      var path = exports.dataDir + '/' + counterString + '.txt';
+      var id = counterString;
+      fs.writeFile(path, text, (err) => {
         if (err) {
+          console.log('There was a problem writing to file');
           callback(err);
         } else {
-          callback(null, {id: id, text: text});
+          callback(null, {id, text});
         }
       });
     }
   });
 };
+
+// exports.create = (text, callback) => {
+//   counter.getNextUniqueId((err, id) => {
+//     if (err) {
+//       console.log('error getting ID:' + err);
+//       callback(err);
+//     } else {
+//       var todoPath = path.join(exports.dataDir, `${id}.txt`);
+//       fs.writeFile(todoPath, text, (err) => {
+//         if (err) {
+//           callback(err);
+//         } else {
+//           callback(null, {id: id, text: text});
+//         }
+//       });
+//     }
+//   });
+// };
 
 //items
 // const todoCount = fs.readdir(todos.dataDir, (err, results) => {
@@ -39,22 +55,7 @@ exports.create = (text, callback) => {
 //     return results
 //   }})
 
-// exports.readAll = (callback) => {
 
-//   var keys = Object.keys(items);
-//   console.log("- - - - - - -Keys: ", keys);
-//   var keysLength = keys.length;
-//   console.log("- - - - -__________ - -keysLen: ", keysLength);
-//   if (keysLength === 0) {
-//     callback(null, []);
-//   }
-//   var data = _.map(items, function(text, id) {
-//     return { id: id, text: id };
-//     // { '00001': { text: 'feed dog' }, '00002': {  text: 'buy food' }}
-
-//   });
-//   callback(null, data);
-// };
 const neverUsedTodoList = [{ id: '00001', text: '00001' }, { id: '00002', text: '00002' }];
 
 exports.readAll = (callback) => {
@@ -64,7 +65,6 @@ exports.readAll = (callback) => {
       throw err;
     } else {
       itemsArray.forEach((fileName)=> {
-    
         data.push({id: fileName.slice(0, -4), text: fileName.slice(0, -4)}); 
       });
       console.log('*****DATA: ', data);
@@ -110,8 +110,8 @@ exports.delete = (id, callback) => {
 
 // Config+Initialization code -- DO NOT MODIFY /////////////////////////////////
 
-exports.dataDir = path.join(__dirname, 'data'); // ${id}.text
-// cruddyApp/datastore/data
+exports.dataDir = path.join(__dirname, 'data'); 
+
 
 exports.initialize = () => {
   if (!fs.existsSync(exports.dataDir)) {
