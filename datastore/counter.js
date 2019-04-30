@@ -14,7 +14,6 @@ var counter = 0;
 const zeroPaddedNumber = (num) => {
   return sprintf('%05d', num);
 };
-
 const readCounter = (callback) => {
   fs.readFile(exports.counterFile, (err, fileData) => {
     if (err) {
@@ -24,7 +23,6 @@ const readCounter = (callback) => {
     }
   });
 };
-
 const writeCounter = (count, callback) => {
   var counterString = zeroPaddedNumber(count);
   fs.writeFile(exports.counterFile, counterString, (err) => {
@@ -36,17 +34,7 @@ const writeCounter = (count, callback) => {
   });
 };
 
-
-// it('should use error first callback pattern', (done) => {
-//   counter.getNextUniqueId((err, id) => {
-//     expect(err).to.be.null;
-//     expect(id).to.exist;
-//     done();
-//   });
-// });
-
 // Public API - Fix this function //////////////////////////////////////////////
-
 exports.getNextUniqueId = (callback) => {
   readCounter((err, counter) => {
     if (err) {
@@ -64,7 +52,7 @@ exports.getNextUniqueId = (callback) => {
   });
 };
 
-
+exports.counterFile = path.join(__dirname, 'counter.txt');
 
 
 
@@ -74,7 +62,7 @@ exports.getNextUniqueId = (callback) => {
 
 // Configuration -- DO NOT MODIFY //////////////////////////////////////////////
 
-exports.counterFile = path.join(__dirname, 'counter.txt');
+
 
 
 
