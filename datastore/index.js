@@ -2,6 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const _ = require('underscore');
 const counter = require('./counter');
+const Promise = require('bluebird');
 
 var items = {};
 
@@ -47,30 +48,76 @@ exports.create = (text, callback) => {
   });
 };
 
-//items
-// const todoCount = fs.readdir(todos.dataDir, (err, results) => {
-//   if (err) {
-//     throw err;
-//   } else {
-//     return results
-//   }})
 
-
-const neverUsedTodoList = [{ id: '00001', text: '00001' }, { id: '00002', text: '00002' }];
+Promise.promisifyAll(fs);
 
 exports.readAll = (callback) => {
   fs.readdir(exports.dataDir, (err, itemsArray)=>{
-    var data = [];
+    var final = [];
+    var results = []; 
+    // var data;
     if (err) {
       throw err;
     } else {
-      itemsArray.forEach((fileName)=> {
-        data.push({id: fileName.slice(0, -4), text: fileName.slice(0, -4)}); 
-      });
-      callback(null, data);
+      if (itemsArray.length === 0 || undefined ) {
+        callback(null, []);
+      } else {
+        var names = [];
+        // var name;
+        // var contents;
+        for (let i = 0; i < itemsArray.length; i++) {
+          var item = itemsArray[i];
+          var name = item.slice(0, -4);
+          names.push(name);
+          var filePath = path.join(exports.dataDir, `${item}`);
+          results.push( fs.readFileAsync(filePath, 'utf8')
+            .then(function(content) {
+              return {id: names[i], text: content};
+            })
+         
+          );
+        }
+        Promise.all(results)
+          .then(results => {
+            callback(null, results);
+            return;
+          });
+      }
+     
+
+ 
+      // callback(null, results);
+
+
+
     }
   });
 };
+
+
+// var item = itemsArray[i];
+// return Promise.all(item)
+//   .then(function(item) {
+//     if (item) {
+//       var string = item.join('');
+//       console.log(string);
+//       var name = string.slice(0, -4);
+//       console.log('FILE NAME IS', name);
+//       console.log('Ilove cofffe');
+//       var obj = {};
+//       var filePath = path.join(exports.dataDir, `${string}`);
+    
+//        fs.readFileAsync(filePath, 'utf8')
+//         .then(function(contents) {
+//           obj.id = name;
+//           obj.text = contents;
+//           results.push(obj);
+//         });
+//     } else {
+//       console.log(err);
+//     }
+//   }).done(e => console.log(e))
+
 
 
 exports.readOne = (id, callback) => {
